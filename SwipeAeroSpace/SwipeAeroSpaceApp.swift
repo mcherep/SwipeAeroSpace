@@ -7,12 +7,33 @@
 
 import SwiftUI
 
+
+func requestAccessibilityPermission(completion: @escaping ()->()) {
+    let isAccessibilityPermissionGranted = PrivacyHelper.isProcessTrustedWithPrompt()
+    debugPrint("Accessibility permission", isAccessibilityPermissionGranted)
+    if isAccessibilityPermissionGranted {
+        completion()
+    } else {
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+            if AXIsProcessTrusted() {
+                debugPrint("Accessibility permission granted")
+                timer.invalidate()
+                completion()
+            }
+        }
+    }
+}
+
 @main
 struct SwipeAeroSpaceApp: App {
-    @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
+//    @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
 
+    init() {
+        requestAccessibilityPermission() {
+            SwipeManager.start()
+        }
+    }
 
-//    @StateObject var vm = ScreencaptureViewModel()
     @AppStorage("menuBarExtraIsInserted") var menuBarExtraIsInserted = true
     @Environment(\.openSettings) private var openSettings
     @Environment(\.openWindow) private var openWindow
