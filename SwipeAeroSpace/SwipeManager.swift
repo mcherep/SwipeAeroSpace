@@ -1,17 +1,34 @@
 import Cocoa
 import Foundation
 import SwiftUI
-func executeCommand(command: String, args: [String]) -> String {
+
+enum Direction {
+    case next
+    case prev
+    
+    var value: String {
+        switch self {
+            case .next:
+                "next"
+            case .prev:
+                "prev"
+        }
+    }
+}
+
+func switchWorkspace(executable: String, direction: Direction ) -> String {
 
     let task = Process()
-
-    task.executableURL = URL(fileURLWithPath: command)
-    task.arguments = args
-
+    task.launchPath = "/bin/bash"
+    task.arguments = ["-c", "\(executable) workspace $(\(executable) list-workspaces --monitor mouse --visible) && \(executable) workspace \(direction.value)"]
     let pipe = Pipe()
     task.standardOutput = pipe
-    task.launch()
-
+    do {
+        try task.run()
+    } catch {
+        print("something went wrong, error: \(error)")
+    }
+    task.waitUntilExit()
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
     let output: String = String(data: data, encoding: .utf8)!
 
@@ -20,52 +37,22 @@ func executeCommand(command: String, args: [String]) -> String {
 
 class SwipeManager {
     private static let accVelXThreshold: Float = 0.07
-    // TODO: figure out the real value of the delay.
-    private static let appSwitcherUIDelay: Double = 0.2
-
     private static var eventTap: CFMachPort? = nil
     // Event state.
     private static var accVelX: Float = 0
     private static var prevTouchPositions: [String: NSPoint] = [:]
     // Gesture state. Gesture may consists of multiple events.
     private static var startTime: Date? = nil
-    @AppStorage("aerospace") private static var aerospace = "/opt/homebrew/bin/aerospace"
+    @AppStorage("aerospace") private static var aerospace: String!
+    @AppStorage("threshold") private static var swipeThreshold: Double!
 
-    /*
-     /opt/homebrew/bin/aerospace workspace "$(/opt/homebrew/bin/aerospace list-workspaces --monitor mouse --visible)" && /opt/homebrew/bin/aerospace workspace next
-
-     /opt/homebrew/bin/aerospace workspace "$(/opt/homebrew/bin/aerospace list-workspaces --monitor mouse --visible)" && /opt/homebrew/bin/aerospace workspace prev
-     */
-    //TODO: move it somewhere else?
     private static func listener(_ eventType: EventType) {
         switch eventType {
         case .startOrContinue(.left):
-//            AppSwitcher.cmdShiftTab()
-            let task = Process()
-            task.launchPath = aerospace
-            task.arguments = ["workspace", "next"]
-            do {
-                try task.run()
-            } catch {
-                print("something went wrong, error: \(error)")
-            }
-            task.waitUntilExit()
-//            let _ = try! Process.run(URL(fileURLWithPath: "/bin/bash"), arguments: ["-c", "/opt/homebrew/bin/aerospace"])
+            let _ = switchWorkspace(executable: aerospace, direction: .next)
         case .startOrContinue(.right):
-//            AppSwitcher.cmdTab()
-            let task = Process()
-            task.launchPath = aerospace
-            task.arguments = ["workspace", "prev"]
-            do {
-                try task.run()
-            } catch {
-                print("something went wrong, error: \(error)")
-            }
-            task.waitUntilExit()
-
+            let _ = switchWorkspace(executable: aerospace, direction: .prev)
         case .end: break
-//            AppSwitcher.selectInAppSwitcher()
-//            print("end")
         }
     }
 
@@ -143,8 +130,9 @@ class SwipeManager {
             startTime = Date()
         } else {
             let interval = startTime!.timeIntervalSinceNow
-            if -interval < appSwitcherUIDelay {
-                // We skip subsequent events until App Switcher UI is shown.
+            print("interval \(interval)")
+            if -interval < swipeThreshold {
+                // filter frequent events
                 clearEventState()
                 return
             }
