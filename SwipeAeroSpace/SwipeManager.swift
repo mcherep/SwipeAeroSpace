@@ -130,7 +130,6 @@ class SwipeManager {
             startTime = Date()
         } else {
             let interval = startTime!.timeIntervalSinceNow
-            print("interval \(interval)")
             if -interval < swipeThreshold {
                 // filter frequent events
                 clearEventState()

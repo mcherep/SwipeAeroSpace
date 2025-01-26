@@ -9,7 +9,7 @@ struct SettingsView: View {
         VStack(alignment: .center, spacing: 16) {
             Form {
                 TextField("AeroSpace", text: SettingsView.$aerospace)
-                TextField("Swipe Threshold", value: SettingsView.$swipeThreshold, format: .number)
+//                TextField("Swipe Threshold", value: SettingsView.$swipeThreshold, format: .number)
                 LaunchAtLogin.Toggle {
                     Text("Launch at login")
                 }
