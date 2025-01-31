@@ -1,4 +1,7 @@
-# SwipeAeroSpace
+
+![banner](./assets/banner.png)
+
+# About
 
 Swipe with three fingers to change AeroSpace workspaces. This can be a single purpose alternative to Better Touch Tool.
 
