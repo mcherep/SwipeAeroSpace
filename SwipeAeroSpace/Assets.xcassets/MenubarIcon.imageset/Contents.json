@@ -2,13 +2,7 @@
   "images" : [
     {
       "filename" : "Frame 2.png",
-      "idiom" : "mac",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "Frame 2@2x.png",
-      "idiom" : "mac",
-      "scale" : "2x"
+      "idiom" : "mac"
     }
   ],
   "info" : {

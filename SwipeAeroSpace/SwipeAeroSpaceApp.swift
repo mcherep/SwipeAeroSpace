@@ -39,7 +39,7 @@ struct SwipeAeroSpaceApp: App {
     @Environment(\.openWindow) private var openWindow
     var body: some Scene {
         MenuBarExtra("Screenshots",
-                     image: "MenuBarIcon",
+                     image: "MenubarIcon",
                      isInserted: $menuBarExtraIsInserted) {
             Button("Settings") {
                 openSettings()
