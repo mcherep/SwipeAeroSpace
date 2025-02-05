@@ -7,6 +7,8 @@ Swipe with three fingers to change AeroSpace workspaces. This can be a single pu
 
 # Installation
 
+You can either download the pre-built binary (built with github actions) or build it from source.
+
 ## Download pre-built binary
 
 1. Download the latest `SwipeAeroSpace.zip` from [Releases](https://github.com/MediosZ/SwipeAeroSpace/releases) page.
