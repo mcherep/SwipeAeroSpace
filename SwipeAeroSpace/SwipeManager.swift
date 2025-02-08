@@ -57,6 +57,14 @@ class SwipeManager {
     @AppStorage("aerospace") private static var aerospace: String!
     //    @AppStorage("threshold") private static var swipeThreshold: Double!
 
+    public static func nextWorkspace() {
+        let _ = switchWorkspace(executable: aerospace, direction: .next)
+    }
+    
+    public static func prevWorkspace() {
+        let _ = switchWorkspace(executable: aerospace, direction: .prev)
+    }
+    
     static func start() {
         if eventTap != nil {
             debugPrint("SwipeManager is already started")

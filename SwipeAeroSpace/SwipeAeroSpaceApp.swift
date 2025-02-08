@@ -42,6 +42,12 @@ struct SwipeAeroSpaceApp: App {
             image: "MenubarIcon",
             isInserted: $menuBarExtraIsInserted
         ) {
+            Button("Next Workspace") {
+                SwipeManager.nextWorkspace()
+            }
+            Button("Prev Workspace") {
+                SwipeManager.prevWorkspace()
+            }
             Button("Settings") {
                 openSettings()
             }
