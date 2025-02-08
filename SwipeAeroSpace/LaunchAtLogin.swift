@@ -5,14 +5,13 @@
 //  Created by Tricster on 1/25/25.
 //
 
-
-import SwiftUI
 import ServiceManagement
+import SwiftUI
 import os.log
 
-
 public enum LaunchAtLogin {
-    private static let logger = Logger(subsystem: "com.sindresorhus.LaunchAtLogin", category: "main")
+    private static let logger = Logger(
+        subsystem: "com.sindresorhus.LaunchAtLogin", category: "main")
     fileprivate static let observable = Observable()
 
     /**
@@ -34,7 +33,9 @@ public enum LaunchAtLogin {
                     try SMAppService.mainApp.unregister()
                 }
             } catch {
-                logger.error("Failed to \(newValue ? "enable" : "disable") launch at login: \(error.localizedDescription)")
+                logger.error(
+                    "Failed to \(newValue ? "enable" : "disable") launch at login: \(error.localizedDescription)"
+                )
             }
         }
     }
@@ -47,7 +48,8 @@ public enum LaunchAtLogin {
     public static var wasLaunchedAtLogin: Bool {
         let event = NSAppleEventManager.shared().currentAppleEvent
         return event?.eventID == kAEOpenApplication
-            && event?.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue == keyAELaunchedAsLogInItem
+            && event?.paramDescriptor(forKeyword: keyAEPropData)?.enumCodeValue
+                == keyAELaunchedAsLogInItem
     }
 }
 
@@ -138,4 +140,3 @@ extension LaunchAtLogin.Toggle<Text> {
         self.init("Launch at login")
     }
 }
-

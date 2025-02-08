@@ -1,22 +1,36 @@
 import SwiftUI
 
-
 struct SettingsView: View {
-    @AppStorage("aerospace") private static var aerospace = "/opt/homebrew/bin/aerospace"
-    @AppStorage("threshold") private static var swipeThreshold: Double = 1.0
+    @AppStorage("aerospace") private static var aerospace: String =
+        "/opt/homebrew/bin/aerospace"
+//    @AppStorage("threshold") private static var swipeThreshold: Double = 0.3
+    @State private var isValid = true
 
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
             Form {
-                TextField("AeroSpace", text: SettingsView.$aerospace)
-//                TextField("Swipe Threshold", value: SettingsView.$swipeThreshold, format: .number)
+                HStack {
+                    TextField(
+                        "AeroSpace Location:", text: SettingsView.$aerospace,
+                        prompt: Text("/opt/homebrew/bin/aerospace")
+                    ).textFieldStyle(RoundedBorderTextFieldStyle())
+                        .disableAutocorrection(true)
+                        .onSubmit {
+                            isValid = FileManager.default.fileExists(
+                                atPath: SettingsView.aerospace)
+                        }
+                    Image(systemName: "circle.fill").foregroundStyle(
+                        isValid ? .green : .red)
+                }
+
+                //                TextField("Swipe Threshold", value: SettingsView.$swipeThreshold, format: .number)
                 LaunchAtLogin.Toggle {
-                    Text("Launch at login")
+                    Text("Launch At Login")
                 }
             }
         }
         .padding(.horizontal, 32)
-        .padding(.vertical, 16)
+        .padding(.vertical, 24)
 
     }
 }
