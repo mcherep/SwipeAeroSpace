@@ -41,30 +41,31 @@ func switchWorkspace(executable: String, direction: Direction) -> String {
     }
     task.waitUntilExit()
     let data = pipe.fileHandleForReading.readDataToEndOfFile()
-    let output: String = String(data: data, encoding: .utf8)!
+    let output: String = String(data: data, encoding: .utf8) ?? ""
 
     return output
 }
 
 class SwipeManager {
-    private static let accDisXThreshold: Float = 0.3
+    // user settings
+    @AppStorage("aerospace") private static var aerospace: String =
+        "/opt/homebrew/bin/aerospace"
+    @AppStorage("threshold") private static var swipeThreshold: Double = 0.3
+
     private static var eventTap: CFMachPort? = nil
     // Event state.
     private static var accDisX: Float = 0
     private static var prevTouchPositions: [String: NSPoint] = [:]
     private static var state: GestureState = .ended
 
-    @AppStorage("aerospace") private static var aerospace: String!
-    //    @AppStorage("threshold") private static var swipeThreshold: Double!
-
     public static func nextWorkspace() {
         let _ = switchWorkspace(executable: aerospace, direction: .next)
     }
-    
+
     public static func prevWorkspace() {
         let _ = switchWorkspace(executable: aerospace, direction: .prev)
     }
-    
+
     static func start() {
         if eventTap != nil {
             debugPrint("SwipeManager is already started")
@@ -153,7 +154,7 @@ class SwipeManager {
 
     private static func handleGesture() {
         // filter
-        if abs(accDisX) < accDisXThreshold {
+        if abs(accDisX) < Float(swipeThreshold) {
             return
         }
         let _ = switchWorkspace(

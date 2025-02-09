@@ -3,8 +3,14 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage("aerospace") private static var aerospace: String =
         "/opt/homebrew/bin/aerospace"
-//    @AppStorage("threshold") private static var swipeThreshold: Double = 0.3
+    @AppStorage("threshold") private static var swipeThreshold: Double = 0.3
+
     @State private var isValid = true
+    @State private var numberFormatter: NumberFormatter = {
+        var nf = NumberFormatter()
+        nf.numberStyle = .decimal
+        return nf
+    }()
 
     var body: some View {
         VStack(alignment: .center, spacing: 16) {
@@ -23,7 +29,13 @@ struct SettingsView: View {
                         isValid ? .green : .red)
                 }
 
-                //                TextField("Swipe Threshold", value: SettingsView.$swipeThreshold, format: .number)
+                TextField(
+                    "Swipe Threshold:", value: SettingsView.$swipeThreshold,
+                    formatter: numberFormatter,
+                    prompt: Text("0.3")
+                ).textFieldStyle(RoundedBorderTextFieldStyle()).frame(
+                    maxWidth: 200)
+
                 LaunchAtLogin.Toggle {
                     Text("Launch At Login")
                 }

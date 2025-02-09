@@ -26,15 +26,15 @@ func requestAccessibilityPermission(completion: @escaping () -> Void) {
 
 @main
 struct SwipeAeroSpaceApp: App {
+    @AppStorage("menuBarExtraIsInserted") var menuBarExtraIsInserted = true
+    @Environment(\.openSettings) private var openSettings
+    @Environment(\.openWindow) private var openWindow
+
     init() {
         requestAccessibilityPermission {
             SwipeManager.start()
         }
     }
-
-    @AppStorage("menuBarExtraIsInserted") var menuBarExtraIsInserted = true
-    @Environment(\.openSettings) private var openSettings
-    @Environment(\.openWindow) private var openWindow
 
     var body: some Scene {
         MenuBarExtra(
