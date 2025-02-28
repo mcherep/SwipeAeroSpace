@@ -25,6 +25,11 @@ jobs:
           hdiutil create temp.dmg -ov -volname "SwipeAeroSpace" -fs HFS+ -srcfolder "build/Release/SwipeAeroSpace.app"
           hdiutil convert temp.dmg -format UDZO -o "SwipeAeroSpace.dmg"
 
+      - name: Make Release Zip
+        run: |
+          cp -r "build/Release/SwipeAeroSpace.app" "SwipeAeroSpace.app"
+          zip -r "SwipeAeroSpace.zip" "SwipeAeroSpace.app"
+
       - name: Upload a Build Artifact
         id: upload_artifact
         uses: actions/upload-artifact@v4
@@ -38,3 +43,4 @@ jobs:
           token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           files: |
             SwipeAeroSpace.dmg
+            SwipeAeroSpace.zip
