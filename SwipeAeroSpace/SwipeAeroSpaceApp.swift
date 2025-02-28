@@ -24,10 +24,20 @@ func requestAccessibilityPermission(completion: @escaping () -> Void) {
     }
 }
 
+@available(macOS 14.0, *)
+struct SettingsButton: View {
+    @Environment(\.openSettings) private var openSettings
+
+    var body: some View {
+        Button("Settings") {
+            openSettings()
+        }
+    }
+}
+
 @main
 struct SwipeAeroSpaceApp: App {
     @AppStorage("menuBarExtraIsInserted") var menuBarExtraIsInserted = true
-    @Environment(\.openSettings) private var openSettings
     @Environment(\.openWindow) private var openWindow
 
     init() {
@@ -48,9 +58,18 @@ struct SwipeAeroSpaceApp: App {
             Button("Prev Workspace") {
                 SwipeManager.prevWorkspace()
             }
-            Button("Settings") {
-                openSettings()
+
+            if #available(macOS 14.0, *) {
+                SettingsButton()
             }
+            else {
+                Button(action: {
+                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                }, label: {
+                    Text("Settings")
+                })
+            }
+
             Button("About") {
                 openWindow(id: "about")
             }
