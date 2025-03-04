@@ -29,7 +29,7 @@ func switchWorkspace(executable: String, direction: Direction) -> String {
     task.launchPath = "/bin/bash"
     task.arguments = [
         "-c",
-        "\(executable) workspace $(\(executable) list-workspaces --monitor mouse --visible) && \(executable) workspace \(direction.value)",
+        "\(executable) workspace $(\(executable) list-workspaces --monitor mouse --visible) && \(executable) workspace --wrap-around \(direction.value)",
     ]
     let pipe = Pipe()
     task.standardOutput = pipe
@@ -158,7 +158,7 @@ class SwipeManager {
             return
         }
         let _ = switchWorkspace(
-            executable: aerospace, direction: accDisX < 0 ? .next : .prev)
+            executable: aerospace, direction: accDisX < 0 ? .prev : .next)
     }
 
     private static func horizontalSwipeDistance(touches: Set<NSTouch>) -> Float
